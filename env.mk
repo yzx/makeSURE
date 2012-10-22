@@ -16,13 +16,13 @@ ifeq ($(HPLAT),linux)
     
 endif
 
-ifeq ($(HOST_PLAT), darwin)
+ifeq ($(HPLAT), darwin)
     HPLAT_FIX?=    m
     HTOOL_PREFIX?=
     TTOOL_PREFIX?= _
 endif
 
-ifeq ($(HOST_PLAT), msys)
+ifeq ($(HPLAT), msys)
     HPLAT_FIX?=    w
     HTOOL_PREFIX?= mingw32-
     TTOOL_PREFIX?= arm-none-linux-gnueabi-
