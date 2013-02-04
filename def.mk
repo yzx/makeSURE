@@ -1,24 +1,33 @@
-OBJECT+= $(CFILES:.c=.o)
-OBJECT+= $(CPPFILES:.cpp=.o)
-HOBJECTS= $(addprefix hdirt/,$(OBJECT))
-TOBJECTS= $(addprefix tdirt/,$(OBJECT))
+include $(BUILD_BASE)/$(TOOL)/def.mk
 
-vpath %.c   $(SDIR)
-vpath %.cpp $(SDIR)
-CFILES=   $(addsuffix   .c,$(CFILE))
-CPPFILES= $(addsuffix .cpp,$(CPPFILE))
-IDIRS=    $(addprefix   -I,$(IDIR)) $(addprefix -I,$(SDIR))
-CCDEFS=   $(addprefix   -D,$(CCDEF))
-HCDEFS=   $(addprefix   -D,$(HCDEF))
-TCDEFS=   $(addprefix   -D,$(TCDEF))
-CCFLAGS=  $(addprefix    -,$(CCFLAG))
-_FLAGS=   -c -Wall -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"
+CPU?= $(HPLAT)
+CONFIG?= Debug
+SDIR+= $(PRJ_BASE)
 
-LDIRS=    $(addprefix   -L,$(LDIR))
-LCNAMES=  $(addprefix   -l,$(LCNAME))
-LHNAMES=  $(addprefix -lh-,$(LPNAME))
-LTNAMES=  $(addprefix -lt-,$(LPNAME))
-LFLAGS=   $(addprefix    -,$(LFLAG))
+DIRT_TOP?= _
+DIRT_PREFIX= $(DIRT_TOP)/$(CPU)/$(CONFIG)
+DIRT= $(PRJ_BASE)/$(DIRT_PREFIX)/dirt
+
+YNAME= $(DIRT_PREFIX)/$(NAME)
+
+vpath %.xml   $(SDIR)
+vpath %.$(SX) $(SDIR)
+vpath %.$(AX) $(SDIR)
+vpath %.c     $(SDIR)
+vpath %.cpp   $(SDIR)
+
+XMLFILES= $(addsuffix .xml,$(XMLFILE)) $(wildcard *.xml)
+SFILES=   $(addsuffix .$(SX),$(SFILE)) $(wildcard *.$(SX))
+AFILES=   $(addsuffix .$(AX),$(AFILE))  $(wildcard *.$(AX))
+CFILES=   $(addsuffix .c,$(CFILE)) $(wildcard *.c)
+CPPFILES= $(addsuffix .cpp,$(CPPFILE)) $(wildcard *.cpp)
+
+OBJECT+= $(SFILES:.$(SX)=.$(OX))
+OBJECT+= $(AFILES:.$(AX)=.$(OX))
+OBJECT+= $(CFILES:.c=.$(OX))
+OBJECT+= $(CPPFILES:.cpp=.$(OX))
+
+OBJECTS= $(addprefix $(DIRT)/,$(OBJECT))
 
 ifneq ($(BMODE),)
     VS_BMODE= //t:$(BMODE) 

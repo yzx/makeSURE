@@ -1,7 +1,11 @@
+include $(BUILD_BASE)/err.mk
+include $(BUILD_BASE)/foo.mk
+
 HPLAT_NAME= \
 linux \
 darwin \
 msys \
+$(OS) \
 #
 
 HPLAT= $(word 1, $(filter $(HPLAT_NAME), $(shell uname -a | tr [A-Z] [a-z])))
@@ -11,19 +15,25 @@ TPLAT_VAR?=
 
 ifeq ($(HPLAT),linux)
     HPLAT_FIX?=    x
-    HTOOL_PREFIX?=
-    TTOOL_PREFIX?= arm-linux-gnueabi-
     
 endif
 
 ifeq ($(HPLAT), darwin)
     HPLAT_FIX?=    m
-    HTOOL_PREFIX?=
-    TTOOL_PREFIX?= _
 endif
 
 ifeq ($(HPLAT), msys)
     HPLAT_FIX?=    w
-    HTOOL_PREFIX?= mingw32-
-    TTOOL_PREFIX?= arm-none-linux-gnueabi-
 endif
+
+TOOL?= gcc
+#CROSS?=
+
+PROJ_BASE?= .
+PRJ_BASE= $(subst $(SPACE),\ ,$(PROJ_BASE))
+
+-include $(PRJ_BASE)/env.mk
+-include $(BUILD_BASE)/$(TOOL)/env.mk
+
+PATH:= $(TOOL_BASE):$(PATH)
+
